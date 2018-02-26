@@ -8,9 +8,12 @@ public class Generics {
 
     }
 
-    // ? 메소드 안에서 사용 못함
+    // ? 메소드 안에서 사용 않음
     static void method2(List<?> list) {
-
+        //list.add(null);
+        list.size();
+        //list.clear();
+        Iterator<?> it = list.iterator();
     }
 
     // ? 메소드 안에서 사용 못함
@@ -41,7 +44,7 @@ public class Generics {
      * @param <T>
      * @return
      */
-    private static <T> long frequency(List<?> list, Object elem) {
+    private static long frequency(List<?> list, Object elem) {
         return list.stream().filter(s-> s.equals(elem)).count();
     }
 
@@ -68,8 +71,44 @@ public class Generics {
         //return list.stream().reduce((a,b) -> a.compareTo(b) > 0 ? a : b);
     }
 
+    /*private static <T> void reverse(List<T> list) {
+        List<T> temp = new ArrayList<T>(list);
+        int size = temp.size();
+        for(int i =0; i < list.size(); i++) {
+            list.set(i, temp.get(size - i -1));
+        }
+    }*/
+
+    private static void reverse(List<?> list) {
+        reverseHelper(list);
+
+        // raw Type 으로 전환해서 사용
+        /*List temp = new ArrayList<>(list);
+        List list2 = list;
+        int size = temp.size();
+
+        for(int i =0; i < list.size(); i++) {
+            list2.set(i, temp.get(size - i -1));
+        }*/
+    }
+
+    /**
+     * ? 사용시 Capture 오류시 Helper Method 사용
+     * @param list
+     * @param <T>
+     */
+    private static <T> void reverseHelper(List<T> list) {
+        List<T> temp = new ArrayList<>(list);
+        int size = temp.size();
+        for(int i =0; i < list.size(); i++) {
+            list.set(i, temp.get(size - i -1)); // Capture error
+        }
+    }
+
     public static void main(String[] args) {
         List<Integer> list = Arrays.asList(1,2,3,4,5, 3, 1, 3);
+        method(list);
+        method2(list);
         // List(Object) = List(Integer) 않됨
         //method3(list);
         System.out.println(isEmpty(list));
@@ -80,7 +119,13 @@ public class Generics {
 
         System.out.println(Collections.max(list, (a, b) -> a - b));
         //System.out.println(Collections.max(list, (Comparator<Object)(a, b) -> a.toString().compareTo(b.toString())));
+
+        reverse(list);
+        // reverse execution
+        System.out.println(list);
     }
+
+
 
 
 }
